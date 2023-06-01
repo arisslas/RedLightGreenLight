@@ -1,5 +1,6 @@
+## App structure
 <p align="center">
-  <img width="200" src="https://open-wc.org/hero.png"></img>
+  <img src="./assets/navigation.png" width="600" alt="navigation image"></img>
 </p>
 
 ## Open-wc Starter App
