@@ -1,21 +1,22 @@
 import { LitElement, html, css } from 'lit';
-
+// TO-DO: refactor component properties to make-it reusable
 class MyLogin extends LitElement {
   static properties = {
     header: { type: String },
-    actionText: { type: String },
+    buttonText: { type: String },
     userName: { type: String },
+    formTitle: { type: String },
   };
 
   static styles = css`
     .container {
-      width: 400px;
+      width: 300px;
       margin: auto;
       padding: 36px 48px 48px 48px;
       background-color: #f2efee;
-
       border-radius: 11px;
       box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.15);
+      text-align: center;
     }
 
     .login-title {
@@ -29,12 +30,28 @@ class MyLogin extends LitElement {
       display: grid;
       grid-template-columns: 1fr;
       row-gap: 16px;
+      position: relative;
     }
 
     .login-form label {
-      text-align: center;
-      display: block;
-      margin-bottom: 8px;
+      position: absolute;
+      margin: 15px 0;
+      padding: 0 4px;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      font-size: 1.3rem;
+      top: 0;
+      left: 17px;
+      transition: all 0.2s;
+      transform-origin: 0% 0%;
+      background: none;
+      pointer-events: none;
+    }
+
+    .login-form input:valid + label,
+    .login-form input:focus + label {
+      transform: scale(0.8) translateY(-30px);
     }
 
     .login-form input {
@@ -47,6 +64,7 @@ class MyLogin extends LitElement {
     .login-form input:focus {
       outline: none;
       box-shadow: 0 0 0 4px rgba(253, 242, 233, 0.5);
+      border: blue;
     }
 
     .btn--form {
@@ -84,26 +102,28 @@ class MyLogin extends LitElement {
 
   constructor() {
     super();
-    this.actionText = 'nanna';
+    this.buttonText = 'Register';
     this.userName = '';
   }
 
   render() {
     return html`
       <div class="container">
-        <h2 class="login-title">${this.userName}</h2>
+        <img src="./assets/mouse.png" width="100" alt="Form icon" />
+        ${this.formTitle
+          ? html`<h2 class="login-title">${this.formTitle}</h2>`
+          : ''}
 
         <form class="login-form">
-          <div>
-            <label for="name">Name </label>
+          <div class="field">
             <input
-              id="name"
+              id="userName"
               type="text"
-              placeholder="Name"
               name="name"
               required
               @change=${this.updateName}
             />
+            <label for="userName" title="formTitle">Name</label>
           </div>
           <button
             class="btn btn--form"
@@ -111,7 +131,7 @@ class MyLogin extends LitElement {
             value="Log in"
             @click=${this.handleAction}
           >
-            Log in
+            ${this.buttonText}
           </button>
         </form>
       </div>
@@ -120,12 +140,20 @@ class MyLogin extends LitElement {
 
   handleAction(e) {
     e.preventDefault();
-    console.log(`boton ${this.userName}`);
+    if (this.userName) {
+      const event = new CustomEvent('mi-evento', {
+        detail: {
+          message: this.userName,
+        },
+        bubbles: true,
+        composed: true,
+      });
+      this.dispatchEvent(event);
+    }
   }
 
   updateName(e) {
     this.userName = e.srcElement.value;
-    console.log(this.userName);
   }
 }
 
